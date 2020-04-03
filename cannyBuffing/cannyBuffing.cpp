@@ -1,20 +1,31 @@
-﻿// cannyBuffing.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
-//
+﻿#include <iostream>
+#include<opencv2/opencv.hpp>
 
-#include <iostream>
+using namespace std;
+using namespace cv;
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	VideoCapture cap(0);//调用摄像头
+	while (1)
+	{
+		cv::Mat frame;
+		cv::Mat dstMat1;
+		cv::Mat dstMat2;
+		cv::Mat gryMat;
+		cv::Mat dxMat;
+		cv::Mat dyMat;
+		cv::Mat abs_dxMat;
+		cv::Mat abs_dyMat;
+		cap >> frame;//获取当前帧
+		cv::cvtColor(frame, gryMat, CV_BGR2GRAY);//将当前帧转为灰度图
+		cv::Sobel(frame, dxMat, CV_16SC1, 1, 0, 3);//用Sobel对x方向微分
+		cv::Sobel(frame, dyMat, CV_16SC1, 0, 1, 3);//用Sobel对y方向微分
+		cv::Canny(dxMat, dyMat, dstMat1, 30, 90);//用Canny进行边缘检测
+		cv::Canny(gryMat, dstMat2, 30, 90, 3);//用Canny进行边缘检测
+		cv::imshow("frame", frame);//输出当前帧
+		cv::imshow("dst1", dstMat1);//输出边缘检测后的结果
+		cv::imshow("dst2", dstMat2);//输出边缘检测后的结构
+		waitKey(30);
+	}
 }
-
-// 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
-// 调试程序: F5 或调试 >“开始调试”菜单
-
-// 入门使用技巧: 
-//   1. 使用解决方案资源管理器窗口添加/管理文件
-//   2. 使用团队资源管理器窗口连接到源代码管理
-//   3. 使用输出窗口查看生成输出和其他消息
-//   4. 使用错误列表窗口查看错误
-//   5. 转到“项目”>“添加新项”以创建新的代码文件，或转到“项目”>“添加现有项”以将现有代码文件添加到项目
-//   6. 将来，若要再次打开此项目，请转到“文件”>“打开”>“项目”并选择 .sln 文件
